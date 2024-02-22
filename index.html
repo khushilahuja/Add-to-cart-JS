@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Com</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="btn-cont">
+      <div class="cnt">
+        <button class="btn">Add Item</button>
+      </div>
+      <div class="clear">
+        <button class="cl-btn">Clear</button>
+      </div>
+    </div>
+    <div class="sort">
+      <span>Sort:</span>
+      <button id="ascending">Ascending</button>
+      <button id="descending">Descending</button>
+    </div>
+    <!--  -->
+    <!--  -->
+    <div class="table-cont">
+      <table class="dataTable">
+        <tr>
+          <th id="tableID">
+            ID <span class="up">&uparrow;</span>
+            <span class="down">&downarrow;</span>
+          </th>
+          <th id="tableName">Product Name</th>
+          <th>Category</th>
+          <th id="tablePrice">
+            Price <span class="up">&uparrow;</span>
+            <span class="down">&downarrow;</span>
+          </th>
+          <th>Availability</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+        <!-- <tr>
+          <td>1</td>
+          <td>Diamond</td>
+          <td>Jewelry</td>
+          <td>12</td>
+          <td>1</td>
+        </tr> -->
+      </table>
+    </div>
+
+    <!-- <div class="clear">
+      <button class="cl-btn">Clear</button>
+    </div> -->
+    <!--  -->
+    <!--  -->
+    <div class="overlay hidden"></div>
+    <!--hidden-->
+    <div class="add-window hidden">
+      <!--hidden -->
+      <button class="btn--close-modal">&times;</button>
+      <form class="upload">
+        <div class="upload__column">
+          <h3 class="upload__heading">Data Doo</h3>
+          <label>ID :</label>
+          <input required name="id" type="number" id="id" />
+          <label>Product Name :</label>
+          <input required name="name" type="text" id="name" />
+          <label>Category :</label>
+          <input required name="category" type="text" id="category" />
+          <label>Price :</label>
+          <input required name="price" type="number" id="price" />
+          <label>Availability :</label>
+          <input required name="availability" type="text" id="availability" />
+        </div>
+
+        <button class="btn upload__btn">
+          <span>Upload</span>
+        </button>
+        <button class="btn save__btn hidden">
+          <span>Save</span>
+        </button>
+      </form>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
