@@ -262,7 +262,48 @@ function deleteRowClk(id) {
 
 // Function to sort data by column in ascending order
 
-function sortingMethod(sortOrder, indexNo) {
+// function sortingMethod(sortOrder, indexNo) {
+//   const tableBody = document.querySelector(".dataTable tbody");
+
+//   const rows = document.querySelectorAll(".trial");
+
+//   const sortedRows = Array.from(rows).sort((a, b) => {
+//     const aValue = a.cells[indexNo].textContent.trim();
+//     const bValue = b.cells[indexNo].textContent.trim();
+//     // if (sortOrder === "ascending") return aValue - bValue;
+//     // if (sortOrder === "descending") return aValue - bValue;
+
+//     return sortOrder === "ascending" ? aValue - bValue : bValue - aValue;
+//   });
+
+//   sortedRows.forEach((row) => {
+//     tableBody.appendChild(row);
+//   });
+// }
+
+function Ascending(indexNo) {
+  const tableBody = document.querySelector(".dataTable tbody");
+
+  // const rows = Array.from(tableBody.querySelectorAll(".trial"));
+  const rows = document.querySelectorAll(".trial");
+
+  const sortedRows = Array.from(rows).sort((a, b) => {
+    const aValue = a.cells[indexNo].textContent.trim();
+    const bValue = b.cells[indexNo].textContent.trim();
+    // return aValue.localeCompare(bValue);
+    return aValue - bValue;
+  });
+
+  console.log(tableBody);
+
+  // tableBody.innerHTML = "";
+
+  sortedRows.forEach((row) => {
+    tableBody.appendChild(row);
+  });
+}
+
+function Descending(indexNo) {
   const tableBody = document.querySelector(".dataTable tbody");
 
   const rows = document.querySelectorAll(".trial");
@@ -270,115 +311,123 @@ function sortingMethod(sortOrder, indexNo) {
   const sortedRows = Array.from(rows).sort((a, b) => {
     const aValue = a.cells[indexNo].textContent.trim();
     const bValue = b.cells[indexNo].textContent.trim();
-    // if (sortOrder === "ascending") return aValue - bValue;
-    // if (sortOrder === "descending") return aValue - bValue;
-
-    return sortOrder === "ascending" ? aValue - bValue : bValue - aValue;
+    // console.log(bValue.localeCompare(aValue));
+    // return bValue.localeCompare(aValue);
+    return bValue - aValue;
   });
+
+  // tableBody.innerHTML = "";
 
   sortedRows.forEach((row) => {
     tableBody.appendChild(row);
   });
 }
 
-// function Ascending(indexNo) {
-//   const tableBody = document.querySelector(".dataTable tbody");
+// let click;
 
-//   // const rows = Array.from(tableBody.querySelectorAll(".trial"));
-//   const rows = document.querySelectorAll(".trial");
+// tableID.addEventListener("click", function () {
+//   console.log("id");
+//   this.click = true;
 
-//   const sortedRows = Array.from(rows).sort((a, b) => {
-//     const aValue = a.cells[indexNo].textContent.trim();
-//     const bValue = b.cells[indexNo].textContent.trim();
-//     // return aValue.localeCompare(bValue);
-//     return aValue - bValue;
+//   if (click) {
+//     sortingMethod("ascending", 0);
+//     upArrow.classList.add("hidden");
+//     downArrow.classList.remove("hidden");
+//   } else {
+//     sortingMethod("", 0);
+//     downArrow.classList.add("hidden");
+//     upArrow.classList.remove("hidden");
+//   }
+
+//   click = !click;
+// });
+
+// tablePrice.addEventListener("click", function () {
+//   console.log("price");
+//   this.click = true;
+
+//   if (click) {
+//     console.log("down");
+//     sortingMethod("ascending", 3);
+//     upArrow.classList.add("hidden");
+//     console.log("hide");
+//     downArrow.classList.remove("hidden");
+//   } else {
+//     console.log("up");
+//     sortingMethod("", 3);
+//     console.log("hide2");
+//     downArrow.classList.add("hidden");
+//     console.log(downArr);
+//     upArrow.classList.remove("hidden");
+//   }
+
+//   click = !click;
+// });
+
+// ////////////////////////////////
+// ////////////conditional buttons
+// function upDownAdd() {
+//   [...upArr, ...downArr].forEach((el) => {
+//     el.classList.add("hidden");
+//     el.classList.add("hidden");
 //   });
-
-//   console.log(tableBody);
-
-//   // tableBody.innerHTML = "";
-
-//   sortedRows.forEach((row) => {
-//     tableBody.appendChild(row);
+// }
+// function upDownRemove() {
+//   [...upArr, ...downArr].forEach((el) => {
+//     el.classList.remove("hidden");
+//     el.classList.remove("hidden");
 //   });
 // }
 
-// function Descending(indexNo) {
-//   const tableBody = document.querySelector(".dataTable tbody");
+//////////////////////////
+//////////////////////////
+//////////////////////////
+//////////////////////////
 
-//   const rows = document.querySelectorAll(".trial");
+let sortColumnIndex = 0; // Default column index for sorting
+let ascendingOrder = true; // Default sorting order
 
-//   const sortedRows = Array.from(rows).sort((a, b) => {
-//     const aValue = a.cells[indexNo].textContent.trim();
-//     const bValue = b.cells[indexNo].textContent.trim();
-//     // console.log(bValue.localeCompare(aValue));
-//     // return bValue.localeCompare(aValue);
-//     return bValue - aValue;
-//   });
+// Function to handle sorting
+function handleSorting(columnIndex) {
+  // Toggle sorting order
+  ascendingOrder = columnIndex === sortColumnIndex ? !ascendingOrder : true;
+  sortColumnIndex = columnIndex;
 
-//   // tableBody.innerHTML = "";
+  // Remove arrow indicators from other columns
+  const arrowIcons = document.querySelectorAll(".arrow-icon");
+  arrowIcons.forEach((icon) => (icon.textContent = ""));
 
-//   sortedRows.forEach((row) => {
-//     tableBody.appendChild(row);
-//   });
-// }
+  // Set arrow indicator for the current column
+  const currentHeader = document.querySelector(
+    `th[data-column-index='${columnIndex}']`
+  );
+  console.log(currentHeader);
+  const arrowIcon = currentHeader.querySelector(".arrow-icon");
+  arrowIcon.textContent = ascendingOrder ? "↑" : "↓";
 
-let click;
-
-tableID.addEventListener("click", function () {
-  console.log("id");
-  this.click = true;
-
-  if (click) {
-    sortingMethod("ascending", 0);
-    upArrow.classList.add("hidden");
-    downArrow.classList.remove("hidden");
+  // Sort rows
+  if (ascendingOrder) {
+    Ascending(columnIndex);
   } else {
-    sortingMethod("", 0);
-    downArrow.classList.add("hidden");
-    upArrow.classList.remove("hidden");
+    Descending(columnIndex);
   }
+}
+handleSorting(0);
 
-  click = !click;
+// Event listeners for table headers
+console.log(document.querySelectorAll(".dataTable th"));
+document.querySelectorAll(".dataTable th").forEach((header, index) => {
+  console.log(header);
+  console.log(index);
+  // header.addEventListener("click", () => {
+  //   handleSorting(index);
+  // });
 });
 
-tablePrice.addEventListener("click", function () {
-  console.log("price");
-  this.click = true;
-
-  if (click) {
-    console.log("down");
-    sortingMethod("ascending", 3);
-    upArrow.classList.add("hidden");
-    console.log("hide");
-    downArrow.classList.remove("hidden");
-  } else {
-    console.log("up");
-    sortingMethod("", 3);
-    console.log("hide2");
-    downArrow.classList.add("hidden");
-    console.log(downArr);
-    upArrow.classList.remove("hidden");
-  }
-
-  click = !click;
-});
-
-////////////////////////////////
-////////////conditional buttons
-function upDownAdd() {
-  [...upArr, ...downArr].forEach((el) => {
-    el.classList.add("hidden");
-    el.classList.add("hidden");
-  });
-}
-function upDownRemove() {
-  [...upArr, ...downArr].forEach((el) => {
-    el.classList.remove("hidden");
-    el.classList.remove("hidden");
-  });
-}
-
+////////////////////////
+////////////////////////
+////////////////////////
+///btn show method
 function btnShow() {
   const data = JSON.parse(localStorage.getItem("data")) || [];
   const index = data.map((item) => item).length;
@@ -386,18 +435,18 @@ function btnShow() {
   if (index === 0) {
     clearLocal.classList.add("hidden");
     sortDiv.classList.add("hidden");
-    upDownAdd();
+    // upDownAdd();
   }
   if (index > 0) {
     clearLocal.classList.remove("hidden");
     sortDiv.classList.add("hidden");
-    upDownAdd();
+    // upDownAdd();
   }
   if (index > 1) {
     clearLocal.classList.remove("hidden");
     sortDiv.classList.remove("hidden");
 
-    upDownRemove();
+    // upDownRemove();
   }
 }
 btnShow();
