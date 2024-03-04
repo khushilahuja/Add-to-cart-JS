@@ -17,6 +17,11 @@ const upArrow = document.querySelector(".up");
 const downArrow = document.querySelector(".down");
 const upArr = document.querySelectorAll(".up");
 const downArr = document.querySelectorAll(".down");
+const filter = document.querySelectorAll('input[name="availabilityFilter"]');
+const hideFilter = document.querySelector(".filter");
+const deleteWindow = document.querySelector(".delete");
+const deleteConfirm = document.querySelector(".yes");
+const deleteCancel = document.querySelector(".no");
 
 const toggleModal = function () {
   overlay.classList.toggle("hidden");
@@ -103,7 +108,7 @@ uploadBtn.addEventListener("click", function (e) {
 window.addEventListener("load", function () {
   const data = JSON.parse(localStorage.getItem("data")) || [];
   data.forEach((value) => {
-    console.log(value);
+    // console.log(value);
     const newRow = `
       <tr id='${value.id}' class='trial'>
         <td>${value.id}</td>
@@ -233,19 +238,45 @@ saveBtn.addEventListener("click", function (e) {
 /////////////////////////////////////////////
 /////////////////////////////////////////////
 // delete row
-document.addEventListener("dblclick", function (event) {
+// document.addEventListener("click", function (event) {
+//   if (event.target.classList.contains("delete-btn")) {
+//     deleteWindow.classList.remove("hidden");
+//     const row = event.target.closest("tr");
+//     if (row) {
+//       const id = row.id;
+
+//       row.remove();
+
+//       deleteRowClk(id);
+//     }
+//     location.reload();
+//   }
+// });
+
+document.addEventListener("click", function (event) {
   if (event.target.classList.contains("delete-btn")) {
+    deleteWindow.classList.remove("hidden");
     const row = event.target.closest("tr");
-    if (row) {
-      const id = row.id;
+    const id = row.id;
 
-      row.remove();
-
+    deleteConfirm.addEventListener("click", function () {
+      deleteRowN(row);
       deleteRowClk(id);
-    }
-    location.reload();
+
+      deleteWindow.classList.add("hidden");
+      location.reload();
+    });
+
+    deleteCancel.addEventListener("click", function () {
+      deleteWindow.classList.add("hidden");
+    });
   }
 });
+function deleteRowN(row) {
+  if (row) {
+    row.remove();
+  }
+}
 
 // Function to delete row from localStorage
 function deleteRowClk(id) {
@@ -384,46 +415,148 @@ function Descending(indexNo) {
 //////////////////////////
 //////////////////////////
 
-let sortColumnIndex = 0; // Default column index for sorting
-let ascendingOrder = true; // Default sorting order
+// let sortColumnIndex = 0; // Default column index for sorting
+// let ascendingOrder = true; // Default sorting order
 
-// Function to handle sorting
-function handleSorting(columnIndex) {
-  // Toggle sorting order
-  ascendingOrder = columnIndex === sortColumnIndex ? !ascendingOrder : true;
-  sortColumnIndex = columnIndex;
+// // Function to handle sorting
+// function handleSorting(columnIndex) {
+//   // Toggle sorting order
+//   ascendingOrder = columnIndex === sortColumnIndex ? !ascendingOrder : true;
+//   sortColumnIndex = columnIndex;
 
-  // Remove arrow indicators from other columns
-  const arrowIcons = document.querySelectorAll(".arrow-icon");
-  arrowIcons.forEach((icon) => (icon.textContent = ""));
+//   // Remove arrow indicators from other columns
+//   const arrowIcons = document.querySelectorAll(".arrow-icon");
+//   arrowIcons.forEach((icon) => (icon.textContent = ""));
 
-  // Set arrow indicator for the current column
-  const currentHeader = document.querySelector(
-    `th[data-column-index='${columnIndex}']`
+//   // Set arrow indicator for the current column
+//   const currentHeader = document.querySelector(
+//     `th[data-column-index='${columnIndex}']`
+//   );
+//   const arrowIcon = currentHeader.querySelector(".arrow-icon");
+//   arrowIcon.textContent = ascendingOrder ? "↑" : "↓";
+
+//   // Sort rows
+//   if (ascendingOrder) {
+//     Ascending(columnIndex);
+//   } else {
+//     Descending(columnIndex);
+//   }
+// }
+
+// // Event listeners for table headers
+// console.log(document.querySelectorAll(".dataTable th"));
+// document.querySelectorAll(".dataTable th").forEach((header, index) => {
+//   console.log(header);
+//   console.log(index);
+//   header.addEventListener("click", () => {
+//     handleSorting(index);
+//   });
+// });
+
+////////////////////////
+////////////////////////
+////////////////////////
+
+// function handleSorting(columnIndex, order) {
+//   const rows = Array.from(document.querySelectorAll(".dataTable tbody tr"));
+
+//   const sortedRows = rows.sort((a, b) => {
+//     const aValue = a.cells[columnIndex].textContent.trim();
+//     const bValue = b.cells[columnIndex].textContent.trim();
+//     return order === "asc"
+//       ? aValue.localeCompare(bValue)
+//       : bValue.localeCompare(aValue);
+//   });
+
+//   const tableBody = document.querySelector(".dataTable tbody");
+//   tableBody.innerHTML = "";
+//   tableBody.appendChild(rows[0]);
+//   sortedRows.forEach((row) => tableBody.appendChild(row));
+// }
+
+// function toggleSortArrow(element) {
+//   const currentSortOrder = element.dataset.sort || "desc";
+//   const newSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+//   element.dataset.sort = newSortOrder;
+//   element.classList.toggle("asc", newSortOrder === "asc");
+//   element.classList.toggle("desc", newSortOrder === "desc");
+// }
+// document.querySelectorAll(".dataTable th").forEach((header, index) => {
+//   header.addEventListener("click", () => {
+//     console.log(header);
+//     const sortOrder = header.dataset.sort || "desc";
+//     console.log(sortOrder);
+//     toggleSortArrow(header);
+//     handleSorting(index, sortOrder);
+//   });
+// });
+
+////////////////////////
+////////////////////////
+////////////////////////
+////////////////////////
+
+function handleSorting(columnIndex, order) {
+  const tableBody = document.querySelector(".dataTable tbody");
+  const headerRow = tableBody.querySelector("tr:first-child");
+  const dataRows = Array.from(
+    tableBody.querySelectorAll("tr:not(:first-child)")
   );
-  console.log(currentHeader);
-  const arrowIcon = currentHeader.querySelector(".arrow-icon");
-  arrowIcon.textContent = ascendingOrder ? "↑" : "↓";
+  console.log(dataRows);
 
-  // Sort rows
-  if (ascendingOrder) {
-    Ascending(columnIndex);
-  } else {
-    Descending(columnIndex);
-  }
+  const sortedRows = dataRows.sort((a, b) => {
+    const aValue = a.cells[columnIndex].textContent.trim();
+    const bValue = b.cells[columnIndex].textContent.trim();
+    // return order === "asc"
+    //   ? aValue.localeCompare(bValue)
+    //   : bValue.localeCompare(aValue);
+
+    const numA = parseFloat(aValue);
+    const numB = parseFloat(bValue);
+
+    if (isNaN(numA) || isNaN(numB)) {
+      return order === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else {
+      // Compare as numbers
+      return order === "asc" ? numA - numB : numB - numA;
+    }
+  });
+
+  tableBody.innerHTML = "";
+  tableBody.appendChild(headerRow);
+
+  sortedRows.forEach((row) => tableBody.appendChild(row));
 }
-handleSorting(0);
 
-// Event listeners for table headers
-console.log(document.querySelectorAll(".dataTable th"));
+function toggleSortArrow(element) {
+  const currentSortOrder = element.dataset.sort || "desc";
+  const newSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+  element.dataset.sort = newSortOrder;
+  element.classList.toggle("asc", newSortOrder === "asc");
+  element.classList.toggle("desc", newSortOrder === "desc");
+
+  document.querySelectorAll(".dataTable th").forEach((header) => {
+    if (header !== element) {
+      header.classList.remove("asc", "desc");
+    }
+  });
+}
+
 document.querySelectorAll(".dataTable th").forEach((header, index) => {
-  console.log(header);
-  console.log(index);
-  // header.addEventListener("click", () => {
-  //   handleSorting(index);
-  // });
+  header.addEventListener("click", () => {
+    if (index === 0 || index === 1 || index === 3) {
+      const sortOrder = header.dataset.sort || "desc";
+      console.log(header.dataset.sort);
+      toggleSortArrow(header);
+      handleSorting(index, sortOrder);
+    }
+  });
 });
 
+////////////////////////
+////////////////////////
 ////////////////////////
 ////////////////////////
 ////////////////////////
@@ -435,18 +568,67 @@ function btnShow() {
   if (index === 0) {
     clearLocal.classList.add("hidden");
     sortDiv.classList.add("hidden");
+    hideFilter.classList.add("hidden");
+
     // upDownAdd();
   }
   if (index > 0) {
     clearLocal.classList.remove("hidden");
     sortDiv.classList.add("hidden");
+    hideFilter.classList.add("hidden");
     // upDownAdd();
   }
   if (index > 1) {
     clearLocal.classList.remove("hidden");
     sortDiv.classList.remove("hidden");
+    hideFilter.classList.remove("hidden");
 
     // upDownRemove();
   }
 }
 btnShow();
+
+/////////////////////////////////
+////////////////////////////
+////////////////////////////
+////////////////////////////
+filter.forEach((radio) => {
+  radio.addEventListener("change", () => {
+    const filterValue = radio.id;
+    const rows = document.querySelectorAll(".dataTable tbody tr");
+
+    rows.forEach((row) => {
+      if (!row.classList.contains("heading-row")) {
+        const availability = row.cells[4].textContent.trim();
+        if (
+          filterValue === "all" ||
+          (filterValue === "available" && availability === "1") ||
+          (filterValue === "unavailable" && availability === "0")
+        ) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      }
+    });
+  });
+});
+
+////////////////////////
+////////////////////////
+////////////////////////
+document.getElementById("applyDiscount").addEventListener("click", function () {
+  const discountInput = document.getElementById("discount");
+  const discountPercentage = parseInt(discountInput.value);
+
+  document.querySelectorAll(".trial").forEach((row) => {
+    const priceCell = row.querySelector("td:nth-child(4)");
+
+    const originalPrice = parseFloat(priceCell.textContent);
+
+    const discountedPrice =
+      originalPrice - (originalPrice * discountPercentage) / 100;
+
+    priceCell.textContent = discountedPrice.toFixed(2);
+  });
+});
